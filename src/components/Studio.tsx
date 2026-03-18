@@ -12,21 +12,21 @@ const images = [
 
 export default function Studio() {
   return (
-    <section id="studio" className="py-32 bg-koda-graphite border-b border-koda-white/10">
-      <div className="container mx-auto px-6 md:px-12">
+    <section id="studio" className="scroll-mt-28 border-b border-koda-white/10 bg-koda-graphite py-24 md:py-32">
+      <div className="container mx-auto px-4 md:px-12">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
+        <div className="mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="font-display text-[4rem] md:text-[6rem] leading-none text-koda-white/10 mb-4">
+            <div className="mb-4 font-display text-[3.5rem] leading-none text-koda-white/10 md:text-[6rem]">
               02
             </div>
-            <h2 className="font-sans text-4xl md:text-6xl font-bold tracking-tighter uppercase">
+            <h2 className="font-sans text-4xl font-bold uppercase tracking-tighter md:text-6xl">
               Студия в Москве
             </h2>
           </motion.div>
@@ -36,14 +36,14 @@ export default function Studio() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-koda-white/60 text-lg font-light max-w-sm md:text-right"
+            className="max-w-sm text-base font-light leading-relaxed text-koda-white/60 md:text-right md:text-lg md:leading-relaxed"
           >
             Профессиональный подход, атмосфера полного погружения, передовые технические решения.
           </motion.p>
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
 
           {/* MAIN ROOM */}
           <motion.div
@@ -51,19 +51,19 @@ export default function Studio() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="md:col-span-8 relative aspect-video md:h-[600px] overflow-hidden group bg-koda-black"
+            className="group relative aspect-video overflow-hidden rounded-2xl bg-koda-black md:col-span-8 md:h-[600px]"
           >
-            <div className="relative w-full h-full group">
+            <div className="relative h-full w-full">
 
               <img 
                 src={images[0]} 
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all duration-700"
+                className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100"
               />
 
-              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition duration-500" />
+              <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
 
-              <div className="absolute inset-0 flex items-end p-6 opacity-0 group-hover:opacity-100 transition duration-500">
-                <div className="translate-y-6 group-hover:translate-y-0 transition duration-500">
+              <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-7 md:opacity-0 md:group-hover:opacity-100">
+                <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
 
                   <h3 className="text-white text-2xl font-bold mb-2">
                     Mix Room A
@@ -79,7 +79,7 @@ export default function Studio() {
                   <a
   href="https://t.me/thekodamusic"
   target="_blank"
-  className="inline-block mt-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full transition"
+  className="inline-flex mt-4 min-h-11 items-center justify-center rounded-full bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 md:hover:bg-red-700"
 >
   Забронировать
 </a>
@@ -91,7 +91,7 @@ export default function Studio() {
           </motion.div>
 
           {/* SIDE */}
-          <div className="md:col-span-4 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:col-span-4 md:gap-5">
 
             {/* ROOM B */}
             <motion.div
@@ -99,19 +99,19 @@ export default function Studio() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative h-[300px] md:h-[calc(50%-0.5rem)] overflow-hidden group bg-koda-black"
+              className="group relative h-[280px] overflow-hidden bg-koda-black md:h-[calc(50%-0.5rem)] rounded-2xl"
             >
-              <div className="relative w-full h-full group">
+              <div className="relative h-full w-full">
 
                 <img 
                   src={images[1]} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
+                  className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-110"
                 />
 
-                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition duration-500" />
+                <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
 
-                <div className="absolute inset-0 flex items-end p-6 opacity-0 group-hover:opacity-100 transition duration-500">
-                  <div className="translate-y-6 group-hover:translate-y-0 transition duration-500">
+              <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-6 md:opacity-0 md:group-hover:opacity-100">
+                  <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
 
                     <h3 className="text-white text-lg font-bold mb-2">
                       Mix Room B
@@ -127,7 +127,7 @@ export default function Studio() {
                     <a
   href="https://t.me/thekodamusic"
   target="_blank"
-  className="inline-block mt-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full transition"
+  className="inline-flex mt-4 min-h-11 items-center justify-center rounded-full bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 md:hover:bg-red-700"
 >
   Забронировать
 </a>
@@ -144,19 +144,19 @@ export default function Studio() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative h-[300px] md:h-[calc(50%-0.5rem)] overflow-hidden group bg-koda-black"
+              className="group relative h-[280px] overflow-hidden bg-koda-black md:h-[calc(50%-0.5rem)] rounded-2xl"
             >
-              <div className="relative w-full h-full group">
+              <div className="relative h-full w-full">
 
                 <img 
                   src={images[2]} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
+                  className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-110"
                 />
 
-                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition duration-500" />
+                <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
 
-                <div className="absolute inset-0 flex items-end p-6 opacity-0 group-hover:opacity-100 transition duration-500">
-                  <div className="translate-y-6 group-hover:translate-y-0 transition duration-500">
+                <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-6 md:opacity-0 md:group-hover:opacity-100">
+                  <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
 
                     <h3 className="text-white text-lg font-bold mb-2">
                       Lounge Zone

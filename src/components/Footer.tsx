@@ -1,30 +1,18 @@
 import logo from "../assets/logo.png";
+
 export default function Footer() {
   return (
-    <footer className="bg-koda-black pt-20 pb-10 border-t border-koda-white/10 overflow-hidden">
-      <div className="container mx-auto px-6 md:px-12">
-        
-        <div className="w-full flex justify-center items-center gap-4 md:gap-8 mb-16">
-          <img 
-            src={logo} 
-            alt="KODA Logo"
-            className="h-[10vw] w-auto invert opacity-5" 
-          />
-          <h2 className="font-display font-bold text-[15vw] leading-none tracking-tighter uppercase text-koda-white/5 select-none">
-            KODA
-          </h2>
-        </div>
+    <footer className="bg-koda-black py-16 md:py-20">
+      <div className="container mx-auto flex flex-col items-center gap-6 px-4 md:px-12">
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 border-t border-koda-white/10 pt-8">
-          <div className="text-koda-white/40 text-xs font-mono uppercase tracking-widest text-center md:text-left">
-            &copy; {new Date().getFullYear()} KODA MUSIC. Все права защищены.
-          </div>
-          
-          <a href="#" className="text-koda-white/40 hover:text-koda-accent text-xs font-mono uppercase tracking-widest transition-colors">
-            Политика конфиденциальности
-          </a>
-        </div>
+        <img src={logo} className="h-12 opacity-20 invert" />
+
+        <p className="text-xs tracking-wide text-koda-white/40">
+          © 2026 KODA MUSIC
+        </p>
+
       </div>
+
     </footer>
   );
 }

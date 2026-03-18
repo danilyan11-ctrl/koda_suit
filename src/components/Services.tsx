@@ -25,12 +25,12 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="py-32 bg-koda-black border-b border-koda-white/10">
-      <div className="container mx-auto px-6 md:px-12">
+    <section id="services" className="scroll-mt-28 border-b border-koda-white/10 bg-koda-black py-24 md:py-32">
+      <div className="container mx-auto px-4 md:px-12">
         
-        <div className="flex items-end gap-6 mb-20">
-          <div className="font-display text-[4rem] md:text-[6rem] leading-none text-koda-white/10">03</div>
-          <h2 className="font-sans text-4xl md:text-6xl font-bold tracking-tighter uppercase pb-2">
+        <div className="mb-12 flex items-end gap-6 md:mb-20">
+          <div className="font-display text-[3.5rem] leading-none text-koda-white/10 md:text-[6rem]">03</div>
+          <h2 className="pb-2 font-sans text-4xl font-bold uppercase tracking-tighter md:text-6xl">
             Услуги
           </h2>
         </div>
@@ -43,18 +43,18 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group border-t border-koda-white/20 py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-koda-white hover:px-8 transition-all duration-500 cursor-pointer"
+              className="group flex cursor-default flex-col justify-between gap-4 border-t border-koda-white/20 py-8 transition-colors duration-500 md:flex-row md:items-center md:gap-6 md:py-12 md:hover:bg-koda-white md:hover:px-8"
             >
-              <div className="flex items-center gap-8 md:gap-16">
+              <div className="flex items-center gap-6 md:gap-16">
                 <span className="font-mono text-sm text-koda-white/40 group-hover:text-koda-black/40 transition-colors">
                   {service.id}
                 </span>
-                <h4 className="font-display text-3xl md:text-5xl uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(228,227,224,0.3)] group-hover:text-koda-black group-hover:[-webkit-text-stroke:0px] transition-all duration-500">
+                <h4 className="font-display text-3xl uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(228,227,224,0.3)] transition-all duration-500 md:text-5xl md:group-hover:text-koda-black md:group-hover:[-webkit-text-stroke:0px]">
                   {service.title}
                 </h4>
               </div>
               
-              <p className="text-koda-white/50 group-hover:text-koda-black/70 font-light max-w-md md:text-right transition-colors duration-500">
+              <p className="max-w-md text-sm font-light leading-relaxed text-koda-white/50 transition-colors duration-500 md:text-right md:text-base md:leading-relaxed md:group-hover:text-koda-black/70">
                 {service.desc}
               </p>
             </motion.div>
