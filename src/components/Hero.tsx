@@ -23,7 +23,7 @@ export default function Hero() {
         </h1>
       </motion.div>
 
-      {/* Subtitle */}
+    
       {/* Marquee Footer */}
       <div className="relative z-10 w-full border-y border-koda-white/10 py-4 bg-koda-black/50 backdrop-blur-sm mt-8">
         <div className="marquee-container">
