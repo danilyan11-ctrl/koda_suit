@@ -24,8 +24,20 @@ export default function Hero() {
       </motion.div>
 
       {/* Subtitle */}
-      <div className="absolute bottom-6 px-4 text-center text-sm font-light tracking-wide text-koda-white/50 md:text-lg">
-        Культ идеи. Культ музыки.
+      {/* Marquee Footer */}
+      <div className="relative z-10 w-full border-y border-koda-white/10 py-4 bg-koda-black/50 backdrop-blur-sm mt-8">
+        <div className="marquee-container">
+          <div className="marquee-track font-display text-2xl md:text-4xl uppercase tracking-widest text-koda-white/80">
+            <span className="mx-8">Культ Идеи.</span>
+            <span className="mx-8 text-koda-accent text-outline">Культ Музыки.</span>
+            <span className="mx-8">Культ Идеи.</span>
+            <span className="mx-8 text-koda-accent text-outline">Культ Музыки.</span>
+            <span className="mx-8">Культ Идеи.</span>
+            <span className="mx-8 text-koda-accent text-outline">Культ Музыки.</span>
+            <span className="mx-8">Культ Идеи.</span>
+            <span className="mx-8 text-koda-accent text-outline">Культ Музыки.</span>
+          </div>
+        </div>
       </div>
     </section>
   );
