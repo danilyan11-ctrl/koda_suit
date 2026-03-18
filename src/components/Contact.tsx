@@ -78,17 +78,10 @@ export default function Contact() {
                   О проекте
                 </label>
               </div>
-              
-              <button 
-                type="submit"
-                className="btn-premium w-full py-6 font-display font-bold text-xl md:text-3xl tracking-widest uppercase text-koda-black bg-koda-white rounded-sm"
-              >
-                Отправить
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
+                <a
+  href="https://t.me/thekodamusic"
+  target="_blank"
+  className="btn-premium w-full py-6 font-display font-bold text-xl md:text-3xl tracking-widest uppercase text-koda-black bg-koda-white rounded-sm text-center block"
+>
+  Отправить
+</a>
