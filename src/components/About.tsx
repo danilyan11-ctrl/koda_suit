@@ -1,3 +1,4 @@
+import about from "../assets/about.jpg";
 import { motion } from 'motion/react';
 
 export default function About() {
@@ -44,9 +45,9 @@ export default function About() {
                 <div className="relative h-64 md:h-80 w-full overflow-hidden rounded-sm group">
                   <div className="absolute inset-0 bg-koda-accent/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500"></div>
                   <img 
-                    src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop" 
+                    src={about}
                     alt="Studio Vibe" 
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover rounded-lg opacity-90 hover:opacity-100 transition"
                     referrerPolicy="no-referrer"
                   />
                 </div>
