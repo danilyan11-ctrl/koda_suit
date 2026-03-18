@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 const services = [
   {
@@ -58,8 +58,9 @@ export default function Services() {
                 <span className="
                 font-mono text-sm text-koda-white/40 
                 transition-colors
+                
                 group-hover:text-koda-black/40
-                group-active:text-koda-black/40
+                active:text-koda-black/40
                 ">
                   {service.id}
                 </span>
@@ -74,8 +75,8 @@ export default function Services() {
                 group-hover:text-koda-black 
                 group-hover:[-webkit-text-stroke:0px]
                 
-                group-active:text-koda-black 
-                group-active:[-webkit-text-stroke:0px]
+                active:text-koda-black 
+                active:[-webkit-text-stroke:0px]
                 ">
                   {service.title}
                 </h4>
@@ -87,7 +88,7 @@ export default function Services() {
               md:text-right md:text-base md:leading-relaxed 
               
               group-hover:text-koda-black/70
-              group-active:text-koda-black/70
+              active:text-koda-black/70
               ">
                 {service.desc}
               </p>
