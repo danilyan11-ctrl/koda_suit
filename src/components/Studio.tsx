@@ -57,13 +57,31 @@ export default function Studio() {
 
               <img 
                 src={images[0]} 
-                className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100"
+                className="
+                h-full w-full object-cover 
+                grayscale opacity-70 
+                transition-all duration-500
+                group-hover:grayscale-0 group-hover:opacity-100
+                group-active:grayscale-0 group-active:opacity-100
+                "
               />
 
-              <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
+              <div className="
+                absolute inset-0 bg-black/70 
+                opacity-100 transition duration-300 
+                group-hover:opacity-0 
+                group-active:opacity-0
+                pointer-events-none
+              " />
 
-              <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-7 md:opacity-0 md:group-hover:opacity-100">
-                <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
+              <div className="
+                absolute inset-0 flex items-end p-5 
+                opacity-100 transition duration-300 
+                md:p-7
+                group-hover:opacity-100 
+                group-active:opacity-100
+              ">
+                <div className="transition duration-300">
 
                   <h3 className="text-white text-2xl font-bold mb-2">
                     Mix Room A
@@ -76,13 +94,21 @@ export default function Studio() {
                   <p className="text-white mt-3 text-sm font-semibold">
                     900₽ / 1800₽
                   </p> 
+
                   <a
-  href="https://t.me/thekodamusic"
-  target="_blank"
-  className="inline-flex mt-4 min-h-11 items-center justify-center rounded-full bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 md:hover:bg-red-700"
->
-  Забронировать
-</a>
+                    href="https://t.me/thekodamusic"
+                    target="_blank"
+                    className="
+                    inline-flex mt-4 min-h-11 items-center justify-center rounded-full 
+                    bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white 
+                    transition 
+                    active:scale-95 active:bg-red-700
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30
+                    md:hover:bg-red-700
+                    "
+                  >
+                    Забронировать
+                  </a>
 
                 </div>
               </div>
@@ -105,13 +131,29 @@ export default function Studio() {
 
                 <img 
                   src={images[1]} 
-                  className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-110"
+                  className="
+                  h-full w-full object-cover 
+                  grayscale opacity-70 
+                  transition-all duration-500
+                  group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110
+                  group-active:grayscale-0 group-active:opacity-100 group-active:scale-105
+                  "
                 />
 
-                <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
+                <div className="
+                  absolute inset-0 bg-black/70 
+                  opacity-100 transition duration-300 
+                  group-hover:opacity-0 
+                  group-active:opacity-0
+                  pointer-events-none
+                " />
 
-              <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-6 md:opacity-0 md:group-hover:opacity-100">
-                  <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
+                <div className="
+                  absolute inset-0 flex items-end p-5 
+                  opacity-100 transition duration-300 
+                  md:p-6
+                ">
+                  <div>
 
                     <h3 className="text-white text-lg font-bold mb-2">
                       Mix Room B
@@ -124,13 +166,21 @@ export default function Studio() {
                     <p className="text-white mt-3 text-sm font-semibold">
                       600₽ / 1400₽
                     </p>
+
                     <a
-  href="https://t.me/thekodamusic"
-  target="_blank"
-  className="inline-flex mt-4 min-h-11 items-center justify-center rounded-full bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 md:hover:bg-red-700"
->
-  Забронировать
-</a>
+                      href="https://t.me/thekodamusic"
+                      target="_blank"
+                      className="
+                      inline-flex mt-4 min-h-11 items-center justify-center rounded-full 
+                      bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white 
+                      transition 
+                      active:scale-95 active:bg-red-700
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30
+                      md:hover:bg-red-700
+                      "
+                    >
+                      Забронировать
+                    </a>
 
                   </div>
                 </div>
@@ -150,13 +200,25 @@ export default function Studio() {
 
                 <img 
                   src={images[2]} 
-                  className="h-full w-full object-cover grayscale opacity-70 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-110"
+                  className="
+                  h-full w-full object-cover 
+                  grayscale opacity-70 
+                  transition-all duration-500
+                  group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110
+                  group-active:grayscale-0 group-active:opacity-100 group-active:scale-105
+                  "
                 />
 
-                <div className="absolute inset-0 bg-black/70 opacity-100 transition duration-500 md:opacity-0 md:group-hover:opacity-100" />
+                <div className="
+                  absolute inset-0 bg-black/70 
+                  opacity-100 transition duration-300 
+                  group-hover:opacity-0 
+                  group-active:opacity-0
+                  pointer-events-none
+                " />
 
-                <div className="absolute inset-0 flex items-end p-5 opacity-100 transition duration-500 md:p-6 md:opacity-0 md:group-hover:opacity-100">
-                  <div className="translate-y-0 transition duration-500 md:translate-y-6 md:group-hover:translate-y-0">
+                <div className="absolute inset-0 flex items-end p-5 md:p-6">
+                  <div>
 
                     <h3 className="text-white text-lg font-bold mb-2">
                       Lounge Zone
