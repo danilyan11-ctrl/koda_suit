@@ -52,17 +52,20 @@ export default function Services() {
             >
               <div className="flex items-center gap-6 md:gap-16">
                 
-                <span className="font-mono text-sm text-koda-white/40 transition-colors group-hover:text-koda-black/40 active:text-koda-black/40">
+                {/* Исправили hover и active для цифр */}
+                <span className="font-mono text-sm text-koda-white/40 transition-colors md:group-hover:text-koda-black/40 group-active:text-koda-black/40">
                   {service.id}
                 </span>
 
-                <h4 className="font-display text-3xl uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(228,227,224,0.3)] transition-all duration-300 md:text-5xl group-hover:text-koda-black group-hover:[-webkit-text-stroke:0px] active:text-koda-black active:[-webkit-text-stroke:0px]">
+                {/* Исправили hover и active для заголовка */}
+                <h4 className="font-display text-3xl uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(228,227,224,0.3)] transition-all duration-300 md:text-5xl md:group-hover:text-koda-black md:group-hover:[-webkit-text-stroke:0px] group-active:text-koda-black group-active:[-webkit-text-stroke:0px]">
                   {service.title}
                 </h4>
 
               </div>
               
-              <p className="max-w-md text-sm font-light leading-relaxed text-koda-white/50 transition-colors duration-300 md:text-right md:text-base md:leading-relaxed group-hover:text-koda-black/70 active:text-koda-black/70">
+              {/* Исправили hover и active для описания */}
+              <p className="max-w-md text-sm font-light leading-relaxed text-koda-white/50 transition-colors duration-300 md:text-right md:text-base md:leading-relaxed md:group-hover:text-koda-black/70 group-active:text-koda-black/70">
                 {service.desc}
               </p>
             </motion.div>
