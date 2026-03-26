@@ -74,25 +74,32 @@
         }
 
         #dynamic-logo {
-            width: 110px; /* Увеличили логотип */
-            position: relative; z-index: 2;
+            width: 110px; position: relative; z-index: 2;
             filter: brightness(0) invert(1);
         }
 
-        /* Дорогая, плавная анимация дыхания */
         @keyframes smoothBreathe {
             0% { transform: scale(1); opacity: 0.8; filter: brightness(0) invert(1) drop-shadow(0 0 0px rgba(255,255,255,0)); }
             100% { transform: scale(1.05); opacity: 1; filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255,255,255,0.15)); }
         }
         
-        .is-playing #dynamic-logo {
-            animation: smoothBreathe 1.5s infinite alternate ease-in-out;
-        }
+        .is-playing #dynamic-logo { animation: smoothBreathe 1.5s infinite alternate ease-in-out; }
 
-        .track-info { position: absolute; bottom: 10%; text-align: center; z-index: 2; }
+        .track-info { position: absolute; bottom: 10%; width: 80%; max-width: 300px; text-align: center; z-index: 2; }
         .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #888; }
         .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; color: var(--white); }
-        .timer { font-family: monospace; font-size: 0.85rem; color: #666; margin-top: 15px; letter-spacing: 2px; }
+        
+        /* ПОЛОСА ЗАГРУЗКИ */
+        .progress-container {
+            width: 100%; height: 2px; background: rgba(255,255,255,0.1);
+            margin-top: 25px; border-radius: 2px; overflow: hidden; position: relative;
+        }
+        .progress-bar {
+            height: 100%; width: 0%; background: var(--red);
+            transition: width 0.1s linear;
+        }
+        
+        .timer { font-family: monospace; font-size: 0.85rem; color: var(--red); margin-top: 10px; letter-spacing: 2px; }
 
         #date-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -108,7 +115,6 @@
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
-        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ФИНАЛЬНЫЙ ЭКРАН --- */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -135,6 +141,8 @@
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             text-decoration: none;
+            display: inline-block;
+            box-sizing: border-box;
         }
         
         .premium-btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
@@ -177,6 +185,11 @@
         <div class="track-info">
             <div class="artist">SELFMADE YB</div>
             <div class="album">Y.C.L<br>KITCHEN</div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="audio-progress"></div>
+            </div>
+            
             <div class="timer" id="time-display">00.00 / 15.00</div>
         </div>
     </div>
@@ -191,9 +204,9 @@
         <div class="access-denied">Y.C.L KITCHEN</div>
         <div class="crash-sub">СНИППЕТ ЗАВЕРШЕН</div>
         
-        <div class="btn-group">
-            <a href="https://t.me/thekodamusic?text=Салют,%20хочу%20мерч%20KITCHEN" target="_blank" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
-            <button class="premium-btn" onclick="downloadCalendarEvent()">НАПОМНИТЬ В КАЛЕНДАРЬ</button>
+                <div class="btn-group">
+            <a href="https://t.me/thekodamusic?text=%D0%A1%D0%B0%D0%BB%D1%8E%D1%82%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BC%D0%B5%D1%80%D1%87%20KITCHEN" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
+            <a id="calendar-link" class="premium-btn" download="ycl_kitchen.ics">НАПОМНИТЬ В КАЛЕНДАРЬ</a>
         </div>
     </div>
 
@@ -208,12 +221,13 @@
         const crashScreen = document.getElementById('crash-screen');
         const audio = document.getElementById('audio-track');
         const timeDisplay = document.getElementById('time-display');
+        const progressBar = document.getElementById('audio-progress');
 
         let audioUnlocked = false;
 
         let holdTimer;
         let progress = 0;
-        const maxProgress = 465; // Подкорректировал под новый радиус
+        const maxProgress = 465; 
         const holdDuration = 1500; 
         const intervalTime = 20;
         const step = maxProgress / (holdDuration / intervalTime);
@@ -276,9 +290,13 @@
             let ms = Math.floor((current % 1) * 100);
             timeDisplay.innerText = `00:${sec < 10 ? '0'+sec : sec}.${ms < 10 ? '0'+ms : ms} / 00:15.00`;
 
+            // Заполняем полоску загрузки
+            progressBar.style.width = (current / 15) * 100 + '%';
+
             if (current >= 15) {
                 audio.pause();
                 audio.currentTime = 15;
+                progressBar.style.width = '100%';
                 experienceScreen.classList.remove('is-playing');
                 triggerSequence();
             }
@@ -296,21 +314,19 @@
             }, 200);
         }
 
-        function downloadCalendarEvent() {
-            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260424T000000\nDTEND;VALUE=DATE:20260425T000000\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
-            
-            // Фикс для iPhone Safari
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
-            window.location.href = url;
-            
-            const btn = document.querySelectorAll('.premium-btn')[1];
-            const originalText = btn.innerText;
-            btn.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
+        // Подготовка ссылки для скачивания календаря (фикс для Safari)
+        const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART:20260424T000000Z\nDTEND:20260425T000000Z\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
+        
+        const calendarLink = document.getElementById('calendar-link');
+        calendarLink.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
+
+        calendarLink.addEventListener('click', function() {
+            const originalText = this.innerText;
+            this.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
             setTimeout(() => {
-                btn.innerText = originalText;
+                this.innerText = originalText;
             }, 3000);
-        }
+        });
     </script>
 </body>
 </html>
