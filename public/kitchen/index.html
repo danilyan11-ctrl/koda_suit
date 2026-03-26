@@ -70,13 +70,27 @@
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 200px; height: 200px; border-radius: 50%;
             background: radial-gradient(circle, rgba(230,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(20px); transition: transform 0.05s ease;
+            filter: blur(20px);
         }
 
         #dynamic-logo {
             width: 80px; position: relative; z-index: 2;
             filter: brightness(0) invert(1);
-            transition: transform 0.05s ease;
+        }
+
+        /* Искусственная пульсация вместо Web Audio API */
+        @keyframes syntheticPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        .is-playing #dynamic-logo {
+            animation: syntheticPulse 0.4s infinite alternate ease-in-out;
+        }
+        
+        .is-playing #audio-aura {
+            animation: syntheticPulse 0.4s infinite alternate ease-in-out;
         }
 
         .track-info { position: absolute; bottom: 10%; text-align: center; z-index: 2; }
@@ -111,13 +125,10 @@
         .access-denied { font-size: 3.5rem; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 10px; text-transform: uppercase; }
         .crash-sub { font-size: 0.9rem; color: #888; letter-spacing: 2px; margin-bottom: 40px; max-width: 320px; }
 
-        .btn-group {
-            display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px;
-        }
+        .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; }
 
         .brutal-btn {
-            width: 100%;
-            background: var(--red); color: var(--white);
+            width: 100%; background: var(--red); color: var(--white);
             border: 2px solid var(--red); padding: 18px 20px;
             font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 900;
             text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
@@ -187,7 +198,7 @@
         </div>
     </div>
 
-   <audio id="audio-track" src="./freakmaster.mp3" preload="auto"></audio>
+   <audio id="audio-track" src="./freakmaster.mp3" preload="auto" playsinline></audio>
 
     <script>
         const bootScreen = document.getElementById('boot-screen');
@@ -198,25 +209,9 @@
         const crashScreen = document.getElementById('crash-screen');
         const audio = document.getElementById('audio-track');
         const timeDisplay = document.getElementById('time-display');
-        const dynamicLogo = document.getElementById('dynamic-logo');
-        const audioAura = document.getElementById('audio-aura');
 
-        let audioCtx, analyser, dataArray;
-        let audioUnlocked = false; // Флаг для разблокировки аудио
+        let audioUnlocked = false;
 
-        function initAudio() {
-            if (audioCtx) return; 
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-            analyser = audioCtx.createAnalyser();
-            const source = audioCtx.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 256;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-        }
-
-        // Логика удержания
         let holdTimer;
         let progress = 0;
         const maxProgress = 483; 
@@ -227,15 +222,13 @@
         function startHold(e) {
             e.preventDefault();
             
-            // МАГИЯ ДЛЯ САФАРИ И АЙФОНОВ: Снимаем блокировку аудио при первом тапе
+            // Жесткая разблокировка аудио без AudioContext
             if (!audioUnlocked) {
-                initAudio();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
                 audio.play().then(() => {
                     audio.pause();
                     audio.currentTime = 0;
                     audioUnlocked = true;
-                }).catch(err => console.log("Audio unlock:", err));
+                }).catch(err => console.log(err));
             }
 
             bootScreen.classList.add('active');
@@ -263,17 +256,6 @@
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
 
-        function animateAudioVisuals() {
-            if (!audio.paused) requestAnimationFrame(animateAudioVisuals);
-            analyser.getByteFrequencyData(dataArray);
-            const bass = dataArray.slice(0, 10).reduce((a, b) => a + b) / 10;
-            const scale = 1 + (bass / 500); 
-            const auraScale = 1 + (bass / 200);
-            dynamicLogo.style.transform = `scale(${scale})`;
-            audioAura.style.transform = `translate(-50%, -50%) scale(${auraScale})`;
-            audioAura.style.opacity = bass / 255;
-        }
-
         function unlockExperience() {
             holdTrigger.removeEventListener('mousedown', startHold);
             holdTrigger.removeEventListener('touchstart', startHold);
@@ -282,10 +264,8 @@
             setTimeout(() => {
                 bootScreen.style.display = 'none';
                 experienceScreen.style.opacity = '1';
-                
-                // Теперь браузер разрешит запуск, потому что мы "прогрели" трек в startHold
+                experienceScreen.classList.add('is-playing'); // Включаем пульсацию лого
                 audio.play();
-                animateAudioVisuals();
             }, 500);
         }
 
@@ -298,6 +278,7 @@
             if (current >= 15) {
                 audio.pause();
                 audio.currentTime = 15;
+                experienceScreen.classList.remove('is-playing'); // Выключаем пульсацию
                 triggerSequence();
             }
         });
@@ -315,22 +296,7 @@
         }
 
         function downloadCalendarEvent() {
-            const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Koda Music//Y.C.L KITCHEN//RU
-BEGIN:VEVENT
-DTSTART;VALUE=DATE:20260424
-DTEND;VALUE=DATE:20260425
-SUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN
-DESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!
-BEGIN:VALARM
-TRIGGER:-PT9H
-ACTION:DISPLAY
-DESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
-
+            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260424\nDTEND;VALUE=DATE:20260425\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -345,7 +311,6 @@ END:VCALENDAR`;
             btn.innerText = "ДОБАВЛЕНО В КАЛЕНДАРЬ!";
             btn.style.color = "var(--red)";
             btn.style.borderColor = "var(--red)";
-            
             setTimeout(() => {
                 btn.innerText = originalText;
                 btn.style.color = "var(--white)";
