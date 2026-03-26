@@ -60,7 +60,6 @@
         
         .instruction { position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 4px; text-transform: uppercase; }
 
-        /* ЭКРАН ПЛЕЕРА - ВСЕ ПО ЦЕНТРУ */
         #experience-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -86,7 +85,6 @@
         
         .is-playing #dynamic-logo { animation: smoothPulse 1.8s infinite alternate ease-in-out; }
 
-        /* ИНФА О ТРЕКЕ ТЕПЕРЬ СРАЗУ ПОД ЛОГОТИПОМ */
         .track-info { 
             position: relative; margin-top: 40px; 
             width: 80%; max-width: 300px; text-align: center; z-index: 2; 
@@ -119,7 +117,6 @@
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
-        /* ФИНАЛЬНЫЙ ЭКРАН */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -127,7 +124,6 @@
             padding: 20px; text-align: center;
         }
 
-        /* Заменили all на auto для корректной работы кликов в iOS */
         #crash-screen.visible { opacity: 1; pointer-events: auto; animation: slowFadeIn 1s ease forwards; }
 
         .final-logo { width: 40px; margin-bottom: 30px; filter: brightness(0) invert(1); opacity: 0.3; }
@@ -150,7 +146,7 @@
             display: inline-block;
             box-sizing: border-box;
             outline: none;
-            -webkit-appearance: none;
+            text-align: center;
         }
         
         .premium-btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
@@ -189,7 +185,7 @@
 
     <div id="experience-screen">
         <div id="audio-aura"></div>
-        <img src="./logo.png" alt="KODA" id="dynamic-logo">
+        <img src="/kitchen/logo.png" onerror="this.src='/kitchen/logo.PNG'" alt="KODA" id="dynamic-logo">
         <div class="track-info">
             <div class="artist">SELFMADE YB</div>
             <div class="album">Y.C.L<br>KITCHEN</div>
@@ -208,17 +204,18 @@
     </div>
 
     <div id="crash-screen">
-        <img src="./logo.png" alt="KODA" class="final-logo">
+        <img src="/kitchen/logo.png" onerror="this.src='/kitchen/logo.PNG'" alt="KODA" class="final-logo">
         <div class="access-denied">Y.C.L KITCHEN</div>
         <div class="crash-sub">СНИППЕТ ЗАВЕРШЕН</div>
         
         <div class="btn-group">
-            <button onclick="openTelegram()" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</button>
-            <button onclick="openCalendar()" class="premium-btn" id="cal-btn">НАПОМНИТЬ В КАЛЕНДАРЬ</button>
+            <a href="https://t.me/thekodamusic?text=%D0%A1%D0%B0%D0%BB%D1%8E%D1%82%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BC%D0%B5%D1%80%D1%87%20KITCHEN" target="_blank" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
+            
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%D0%A0%D0%B5%D0%BB%D0%B8%D0%B7%20%D0%B0%D0%BB%D1%8C%D0%B1%D0%BE%D0%BC%D0%B0%20SELFMADE%20YB%20-%20Y.C.L%20KITCHEN&dates=20260424T000000Z/20260425T000000Z&details=%D0%90%D0%BB%D1%8C%D0%B1%D0%BE%D0%BC%20Y.C.L%20KITCHEN%20%D1%83%D0%B6%D0%B5%20%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B5%D0%BD%20%D0%BD%D0%B0%20%D0%B2%D1%81%D0%B5%D1%85%20%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D0%BA%D0%B0%D1%85.%20%D0%A1%D0%BB%D1%83%D1%88%D0%B0%D0%B9%20%D0%BF%D1%80%D1%8F%D0%BC%D0%BE%20%D1%81%D0%B5%D0%B9%D1%87%D0%B0%D1%81!" target="_blank" class="premium-btn" onclick="let orig=this.innerText; this.innerText='ОТКРЫВАЕМ...'; setTimeout(()=>this.innerText=orig, 3000);">НАПОМНИТЬ В КАЛЕНДАРЬ</a>
         </div>
     </div>
 
-   <audio id="audio-track" src="./freakmaster.mp3" preload="auto" playsinline></audio>
+   <audio id="audio-track" src="/kitchen/freakmaster.mp3" preload="auto" playsinline></audio>
 
     <script>
         const bootScreen = document.getElementById('boot-screen');
@@ -319,27 +316,6 @@
                     crashScreen.classList.add('visible');
                 }, 2000);
             }, 200);
-        }
-
-        /* --- ЖЕСТКИЕ ПРИВЯЗКИ ДЛЯ КНОПОК --- */
-        function openTelegram() {
-            const text = encodeURIComponent("Салют, хочу мерч KITCHEN");
-            window.location.href = "https://t.me/thekodamusic?text=" + text;
-        }
-
-        function openCalendar() {
-            const btn = document.getElementById('cal-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "ОТКРЫВАЕМ...";
-            
-            const title = encodeURIComponent("Релиз альбома SELFMADE YB - Y.C.L KITCHEN");
-            const details = encodeURIComponent("Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!");
-            const dates = "20260424T000000Z/20260425T000000Z";
-            
-            // Открываем Google Календарь, который 100% работает в любом мобильном браузере
-            window.location.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
-            
-            setTimeout(() => { btn.innerText = originalText; }, 3000);
         }
     </script>
 </body>
