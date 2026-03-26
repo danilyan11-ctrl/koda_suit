@@ -44,7 +44,3 @@ export default function Hero() {
     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-20" />
   </div>
 </div>
-</section>
-  );
- }
-
