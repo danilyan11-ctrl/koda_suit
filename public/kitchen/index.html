@@ -22,14 +22,12 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Системный шум */
         .noise {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/%3E%3C/svg%3E');
             pointer-events: none; z-index: 999;
         }
 
-        /* --- ЭКРАН 1: HOLD TO DECRYPT --- */
         #boot-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -62,7 +60,6 @@
         
         .instruction { position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 4px; text-transform: uppercase; }
 
-        /* --- ЭКРАН 2: EXPERIENCE --- */
         #experience-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -87,7 +84,6 @@
         .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; }
         .timer { font-family: monospace; font-size: 0.9rem; color: var(--red); margin-top: 15px; letter-spacing: 2px; }
 
-        /* --- ЭКРАН 3: ДАТА --- */
         #date-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -103,7 +99,6 @@
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
-        /* --- ЭКРАН 4: THE CRASH (Кнопки) --- */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -116,7 +111,6 @@
         .access-denied { font-size: 3.5rem; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 10px; text-transform: uppercase; }
         .crash-sub { font-size: 0.9rem; color: #888; letter-spacing: 2px; margin-bottom: 40px; max-width: 320px; }
 
-        /* Группа кнопок */
         .btn-group {
             display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px;
         }
@@ -132,7 +126,6 @@
         }
         .brutal-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px rgba(255,255,255,0.1); }
         
-        /* Вторичная кнопка (Напоминание) */
         .brutal-btn.outline {
             background: transparent; color: var(--white); border-color: var(--grey);
             box-shadow: 6px 6px 0px rgba(255,255,255,0.05);
@@ -194,7 +187,7 @@
         </div>
     </div>
 
-   <audio id="audio-track" src="/kitchen/freakmaster.mp3" preload="auto" playsinline></audio>
+   <audio id="audio-track" src="./freakmaster.mp3" preload="auto"></audio>
 
     <script>
         const bootScreen = document.getElementById('boot-screen');
@@ -208,6 +201,21 @@
         const dynamicLogo = document.getElementById('dynamic-logo');
         const audioAura = document.getElementById('audio-aura');
 
+        let audioCtx, analyser, dataArray;
+        let audioUnlocked = false; // Флаг для разблокировки аудио
+
+        function initAudio() {
+            if (audioCtx) return; 
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+
         // Логика удержания
         let holdTimer;
         let progress = 0;
@@ -218,6 +226,18 @@
 
         function startHold(e) {
             e.preventDefault();
+            
+            // МАГИЯ ДЛЯ САФАРИ И АЙФОНОВ: Снимаем блокировку аудио при первом тапе
+            if (!audioUnlocked) {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audioUnlocked = true;
+                }).catch(err => console.log("Audio unlock:", err));
+            }
+
             bootScreen.classList.add('active');
             holdTimer = setInterval(() => {
                 progress += step;
@@ -243,20 +263,6 @@
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
 
-        let audioCtx, analyser, dataArray;
-
-        function initAudio() {
-            if (audioCtx) return; 
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-            analyser = audioCtx.createAnalyser();
-            const source = audioCtx.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 256;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-        }
-
         function animateAudioVisuals() {
             if (!audio.paused) requestAnimationFrame(animateAudioVisuals);
             analyser.getByteFrequencyData(dataArray);
@@ -269,62 +275,19 @@
         }
 
         function unlockExperience() {
-  holdTrigger.removeEventListener('mousedown', startHold);
-  holdTrigger.removeEventListener('touchstart', startHold);
-
-  initAudio();
-
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-
-  // 👉 СРАЗУ PLAY (без setTimeout)
-  audio.currentTime = 0;
-
-  const playPromise = audio.play();
-
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {
-      audio.muted = true;
-      audio.play().then(() => {
-        audio.muted = false;
-      });
-    });
-  }
-
-  // 👉 а вот UI можно с задержкой
-  setTimeout(() => {
-    bootScreen.style.opacity = '0';
-    bootScreen.style.display = 'none';
-    experienceScreen.style.opacity = '1';
-    animateAudioVisuals();
-  }, 300);
-}
-
-        // 🔥 КРИТИЧНО — сначала play
-const playPromise = audio.play();
-
-if (playPromise !== undefined) {
-    playPromise.catch(() => {
-        audio.muted = true;
-        audio.play().then(() => {
-            audio.muted = false;
-        });
-    });
-}
-
-                // fallback для ебучих мобилок
-                audio.muted = true;
-                audio.play().then(() => {
-                    audio.muted = false;
-                    initAudio();
-                    animateAudioVisuals();
-                });
-            });
+            holdTrigger.removeEventListener('mousedown', startHold);
+            holdTrigger.removeEventListener('touchstart', startHold);
+            
+            bootScreen.style.opacity = '0';
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+                experienceScreen.style.opacity = '1';
+                
+                // Теперь браузер разрешит запуск, потому что мы "прогрели" трек в startHold
+                audio.play();
+                animateAudioVisuals();
+            }, 500);
         }
-
-    }, 500);
-}
 
         audio.addEventListener('timeupdate', () => {
             let current = audio.currentTime;
@@ -351,9 +314,7 @@ if (playPromise !== undefined) {
             }, 200);
         }
 
-        // ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СОБЫТИЯ КАЛЕНДАРЯ
         function downloadCalendarEvent() {
-            // Формируем структуру файла .ics
             const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Koda Music//Y.C.L KITCHEN//RU
@@ -370,11 +331,8 @@ END:VALARM
 END:VEVENT
 END:VCALENDAR`;
 
-            // Создаем виртуальный файл в браузере
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
-            
-            // Создаем скрытую ссылку и "нажимаем" на нее
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'ycl_kitchen_release.ics');
@@ -382,7 +340,6 @@ END:VCALENDAR`;
             link.click();
             document.body.removeChild(link);
             
-            // Визуальный фидбек на кнопке
             const btn = document.querySelector('.brutal-btn.outline');
             const originalText = btn.innerText;
             btn.innerText = "ДОБАВЛЕНО В КАЛЕНДАРЬ!";
