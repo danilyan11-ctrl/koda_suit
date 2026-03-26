@@ -60,6 +60,7 @@
         
         .instruction { position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 4px; text-transform: uppercase; }
 
+        /* ЭКРАН ПЛЕЕРА - ВСЕ ПО ЦЕНТРУ */
         #experience-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -68,32 +69,31 @@
 
         #audio-aura {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 250px; height: 250px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(20px);
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(20px); pointer-events: none;
         }
 
         #dynamic-logo {
-            width: 110px; /* Логотип 110px */
-            position: relative; z-index: 2;
-            filter: brightness(0) invert(1); /* Логотип белый */
+            width: 110px; position: relative; z-index: 2;
+            filter: brightness(0) invert(1);
         }
 
-        /* Дорогая, плавная пульсация (Дыхание) */
         @keyframes smoothPulse {
             0% { transform: scale(1); opacity: 0.8; }
             100% { transform: scale(1.08); opacity: 1; }
         }
         
-        .is-playing #dynamic-logo {
-            animation: smoothPulse 1.8s infinite alternate ease-in-out;
-        }
+        .is-playing #dynamic-logo { animation: smoothPulse 1.8s infinite alternate ease-in-out; }
 
-        .track-info { position: absolute; bottom: 10%; width: 80%; max-width: 300px; text-align: center; z-index: 2; }
+        /* ИНФА О ТРЕКЕ ТЕПЕРЬ СРАЗУ ПОД ЛОГОТИПОМ */
+        .track-info { 
+            position: relative; margin-top: 40px; 
+            width: 80%; max-width: 300px; text-align: center; z-index: 2; 
+        }
         .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #888; }
         .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; color: var(--white); }
         
-        /* ПОЛОСА ЗАГРУЗКИ */
         .progress-container {
             width: 100%; height: 2px; background: rgba(255,255,255,0.1);
             margin-top: 25px; border-radius: 2px; overflow: hidden; position: relative;
@@ -103,7 +103,6 @@
             transition: width 0.1s linear;
         }
         
-        /* Таймер КРАСНЫЙ */
         .timer { font-family: monospace; font-size: 0.85rem; color: var(--red); margin-top: 10px; letter-spacing: 2px; }
 
         #date-screen {
@@ -120,7 +119,7 @@
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
-        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ФИНАЛЬНЫЙ ЭКРАН --- */
+        /* ФИНАЛЬНЫЙ ЭКРАН */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -128,7 +127,8 @@
             padding: 20px; text-align: center;
         }
 
-        #crash-screen.visible { opacity: 1; pointer-events: all; animation: slowFadeIn 1s ease forwards; }
+        /* Заменили all на auto для корректной работы кликов в iOS */
+        #crash-screen.visible { opacity: 1; pointer-events: auto; animation: slowFadeIn 1s ease forwards; }
 
         .final-logo { width: 40px; margin-bottom: 30px; filter: brightness(0) invert(1); opacity: 0.3; }
         .access-denied { font-size: 2.5rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 8px; text-transform: uppercase; letter-spacing: -1px; }
@@ -149,6 +149,8 @@
             text-decoration: none;
             display: inline-block;
             box-sizing: border-box;
+            outline: none;
+            -webkit-appearance: none;
         }
         
         .premium-btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
@@ -211,8 +213,8 @@
         <div class="crash-sub">СНИППЕТ ЗАВЕРШЕН</div>
         
         <div class="btn-group">
-            <a href="https://t.me/thekodamusic?text=%D0%A1%D0%B0%D0%BB%D1%8E%D1%82,%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BC%D0%B5%D1%80%D1%87%20KITCHEN" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
-            <a id="calendar-link" class="premium-btn" onclick="openGoogleCalendarReminder()">НАПОМНИТЬ В КАЛЕНДАРЬ</a>
+            <button onclick="openTelegram()" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</button>
+            <button onclick="openCalendar()" class="premium-btn" id="cal-btn">НАПОМНИТЬ В КАЛЕНДАРЬ</button>
         </div>
     </div>
 
@@ -296,7 +298,6 @@
             let ms = Math.floor((current % 1) * 100);
             timeDisplay.innerText = `00:${sec < 10 ? '0'+sec : sec}.${ms < 10 ? '0'+ms : ms} / 00:15.00`;
 
-            // Заполняем полоску загрузки
             progressBar.style.width = (current / 15) * 100 + '%';
 
             if (current >= 15) {
@@ -320,23 +321,25 @@
             }, 200);
         }
 
-        // Фикс Календаря для iOS: Генерируем прямую ссылку на Google Календарь
-        function openGoogleCalendarReminder() {
-            const eventInfo = {
-                title: "Релиз альбома SELFMADE YB - Y.C.L KITCHEN",
-                dates: "20260424T090000Z/20260424T120000Z", // 24 Апреля 2026
-                details: "Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!",
-                location: "thekodamusic.com"
-            };
-            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventInfo.title)}&dates=${eventInfo.dates}&details=${encodeURIComponent(eventInfo.details)}&location=${encodeURIComponent(eventInfo.location)}`;
-            window.location.href = googleCalendarUrl;
-            
-            const btn = document.getElementById('calendar-link');
+        /* --- ЖЕСТКИЕ ПРИВЯЗКИ ДЛЯ КНОПОК --- */
+        function openTelegram() {
+            const text = encodeURIComponent("Салют, хочу мерч KITCHEN");
+            window.location.href = "https://t.me/thekodamusic?text=" + text;
+        }
+
+        function openCalendar() {
+            const btn = document.getElementById('cal-btn');
             const originalText = btn.innerText;
-            btn.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
-            setTimeout(() => {
-                btn.innerText = originalText;
-            }, 3000);
+            btn.innerText = "ОТКРЫВАЕМ...";
+            
+            const title = encodeURIComponent("Релиз альбома SELFMADE YB - Y.C.L KITCHEN");
+            const details = encodeURIComponent("Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!");
+            const dates = "20260424T000000Z/20260425T000000Z";
+            
+            // Открываем Google Календарь, который 100% работает в любом мобильном браузере
+            window.location.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
+            
+            setTimeout(() => { btn.innerText = originalText; }, 3000);
         }
     </script>
 </body>
