@@ -36,27 +36,27 @@
 
         .hold-btn {
             width: 150px; height: 150px; border-radius: 50%;
-            border: 2px dashed var(--grey);
+            border: 1px solid rgba(255,255,255,0.1);
             display: flex; justify-content: center; align-items: center;
             position: relative; cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
         
         .hold-text {
             font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;
-            text-align: center; color: var(--grey);
-            transition: color 0.2s ease;
+            text-align: center; color: rgba(255,255,255,0.5);
+            transition: color 0.3s ease;
         }
 
-        .progress-ring { position: absolute; top: -2px; left: -2px; pointer-events: none; transform: rotate(-90deg); }
+        .progress-ring { position: absolute; top: -1px; left: -1px; pointer-events: none; transform: rotate(-90deg); }
         .progress-ring__circle {
             transition: stroke-dashoffset 0.1s linear;
-            stroke: var(--red); stroke-width: 4; fill: transparent;
+            stroke: var(--white); stroke-width: 2; fill: transparent;
             stroke-dasharray: 483; stroke-dashoffset: 483; 
         }
 
-        #boot-screen.active .hold-btn { transform: scale(0.95); border-color: transparent; }
-        #boot-screen.active .hold-text { color: var(--red); }
+        #boot-screen.active .hold-btn { transform: scale(0.95); background: rgba(255,255,255,0.02); }
+        #boot-screen.active .hold-text { color: var(--white); }
         
         .instruction { position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 4px; text-transform: uppercase; }
 
@@ -68,35 +68,31 @@
 
         #audio-aura {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 200px; height: 200px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(230,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+            width: 250px; height: 250px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
             filter: blur(20px);
         }
 
         #dynamic-logo {
-            width: 80px; position: relative; z-index: 2;
+            width: 110px; /* Увеличили логотип */
+            position: relative; z-index: 2;
             filter: brightness(0) invert(1);
         }
 
-        /* Искусственная пульсация вместо Web Audio API */
-        @keyframes syntheticPulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        /* Дорогая, плавная анимация дыхания */
+        @keyframes smoothBreathe {
+            0% { transform: scale(1); opacity: 0.8; filter: brightness(0) invert(1) drop-shadow(0 0 0px rgba(255,255,255,0)); }
+            100% { transform: scale(1.05); opacity: 1; filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255,255,255,0.15)); }
         }
         
         .is-playing #dynamic-logo {
-            animation: syntheticPulse 0.4s infinite alternate ease-in-out;
-        }
-        
-        .is-playing #audio-aura {
-            animation: syntheticPulse 0.4s infinite alternate ease-in-out;
+            animation: smoothBreathe 1.5s infinite alternate ease-in-out;
         }
 
         .track-info { position: absolute; bottom: 10%; text-align: center; z-index: 2; }
-        .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #aaa; }
-        .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; }
-        .timer { font-family: monospace; font-size: 0.9rem; color: var(--red); margin-top: 15px; letter-spacing: 2px; }
+        .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #888; }
+        .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; color: var(--white); }
+        .timer { font-family: monospace; font-size: 0.85rem; color: #666; margin-top: 15px; letter-spacing: 2px; }
 
         #date-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -107,12 +103,12 @@
         #date-screen.visible { opacity: 1; animation: flashIn 0.1s ease-out forwards; }
         
         .massive-date { 
-            font-size: 3.5rem; font-weight: 900; color: var(--red); 
-            letter-spacing: 4px; text-shadow: 0 0 20px rgba(230,0,0,0.4);
-            animation: textFlicker 3s infinite;
+            font-size: 3.5rem; font-weight: 900; color: var(--white); 
+            letter-spacing: 4px; text-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
+        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ФИНАЛЬНЫЙ ЭКРАН --- */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -120,34 +116,36 @@
             padding: 20px; text-align: center;
         }
 
-        #crash-screen.visible { opacity: 1; pointer-events: all; animation: crtFlicker 0.15s 3; }
+        #crash-screen.visible { opacity: 1; pointer-events: all; animation: slowFadeIn 1s ease forwards; }
 
-        .access-denied { font-size: 3.5rem; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 10px; text-transform: uppercase; }
-        .crash-sub { font-size: 0.9rem; color: #888; letter-spacing: 2px; margin-bottom: 40px; max-width: 320px; }
+        .final-logo { width: 40px; margin-bottom: 30px; filter: brightness(0) invert(1); opacity: 0.3; }
+        .access-denied { font-size: 2.5rem; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 8px; text-transform: uppercase; letter-spacing: -1px; }
+        .crash-sub { font-size: 0.8rem; color: #666; letter-spacing: 4px; margin-bottom: 50px; text-transform: uppercase; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
 
-        .brutal-btn {
-            width: 100%; background: var(--red); color: var(--white);
-            border: 2px solid var(--red); padding: 18px 20px;
-            font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
-            box-shadow: 6px 6px 0px rgba(255,255,255,0.1);
-            transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
+        .premium-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            padding: 16px 20px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            text-decoration: none;
         }
-        .brutal-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px rgba(255,255,255,0.1); }
         
-        .brutal-btn.outline {
-            background: transparent; color: var(--white); border-color: var(--grey);
-            box-shadow: 6px 6px 0px rgba(255,255,255,0.05);
-        }
-        .brutal-btn.outline:active { box-shadow: 2px 2px 0px rgba(255,255,255,0.05); }
+        .premium-btn:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.08); }
+        
+        .premium-btn.accent { background: var(--white); color: var(--bg); border: none; font-weight: 900; }
+        .premium-btn.accent:active { background: #ddd; }
 
         .glitch-effect { filter: url(#displacementFilter); }
 
-        @keyframes crtFlicker { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.9; } }
+        @keyframes slowFadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         @keyframes flashIn { 0% { background: var(--white); filter: invert(1); } 100% { background: var(--bg); filter: invert(0); } }
-        @keyframes textFlicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 24%, 55% { opacity: 0.5; } }
     </style>
 </head>
 <body>
@@ -165,10 +163,10 @@
 
     <div id="boot-screen">
         <div class="hold-btn" id="hold-trigger">
-            <svg class="progress-ring" width="160" height="160">
-                <circle class="progress-ring__circle" cx="80" cy="80" r="77" />
+            <svg class="progress-ring" width="150" height="150">
+                <circle class="progress-ring__circle" cx="75" cy="75" r="74" />
             </svg>
-            <span class="hold-text">HOLD TO<br>DECRYPT</span>
+            <span class="hold-text">HOLD</span>
         </div>
         <div class="instruction">SYSTEM LOCKED</div>
     </div>
@@ -189,12 +187,13 @@
     </div>
 
     <div id="crash-screen">
-        <div class="access-denied">ACCESS<br>DENIED</div>
-        <div class="crash-sub">ПРЕДПРОСЛУШИВАНИЕ ПРЕРВАНО.</div>
+        <img src="./logo.png" alt="KODA" class="final-logo">
+        <div class="access-denied">Y.C.L KITCHEN</div>
+        <div class="crash-sub">СНИППЕТ ЗАВЕРШЕН</div>
         
         <div class="btn-group">
-            <button class="brutal-btn" onclick="window.location.href='#merch'">ЗАКАЗАТЬ МЕРЧ</button>
-            <button class="brutal-btn outline" onclick="downloadCalendarEvent()">НАПОМНИТЬ ОБ АЛЬБОМЕ</button>
+            <a href="https://t.me/thekodamusic?text=Салют,%20хочу%20мерч%20KITCHEN" target="_blank" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
+            <button class="premium-btn" onclick="downloadCalendarEvent()">НАПОМНИТЬ В КАЛЕНДАРЬ</button>
         </div>
     </div>
 
@@ -214,15 +213,17 @@
 
         let holdTimer;
         let progress = 0;
-        const maxProgress = 483; 
+        const maxProgress = 465; // Подкорректировал под новый радиус
         const holdDuration = 1500; 
         const intervalTime = 20;
         const step = maxProgress / (holdDuration / intervalTime);
 
+        circle.style.strokeDasharray = maxProgress;
+        circle.style.strokeDashoffset = maxProgress;
+
         function startHold(e) {
             e.preventDefault();
             
-            // Жесткая разблокировка аудио без AudioContext
             if (!audioUnlocked) {
                 audio.play().then(() => {
                     audio.pause();
@@ -264,7 +265,7 @@
             setTimeout(() => {
                 bootScreen.style.display = 'none';
                 experienceScreen.style.opacity = '1';
-                experienceScreen.classList.add('is-playing'); // Включаем пульсацию лого
+                experienceScreen.classList.add('is-playing');
                 audio.play();
             }, 500);
         }
@@ -278,7 +279,7 @@
             if (current >= 15) {
                 audio.pause();
                 audio.currentTime = 15;
-                experienceScreen.classList.remove('is-playing'); // Выключаем пульсацию
+                experienceScreen.classList.remove('is-playing');
                 triggerSequence();
             }
         });
@@ -291,30 +292,23 @@
                 setTimeout(() => {
                     dateScreen.style.display = 'none';
                     crashScreen.classList.add('visible');
-                }, 2500);
+                }, 2000);
             }, 200);
         }
 
         function downloadCalendarEvent() {
-            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260424\nDTEND;VALUE=DATE:20260425\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
+            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260424T000000\nDTEND;VALUE=DATE:20260425T000000\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
+            
+            // Фикс для iPhone Safari
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'ycl_kitchen_release.ics');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            window.location.href = url;
             
-            const btn = document.querySelector('.brutal-btn.outline');
+            const btn = document.querySelectorAll('.premium-btn')[1];
             const originalText = btn.innerText;
-            btn.innerText = "ДОБАВЛЕНО В КАЛЕНДАРЬ!";
-            btn.style.color = "var(--red)";
-            btn.style.borderColor = "var(--red)";
+            btn.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
             setTimeout(() => {
                 btn.innerText = originalText;
-                btn.style.color = "var(--white)";
-                btn.style.borderColor = "var(--grey)";
             }, 3000);
         }
     </script>
