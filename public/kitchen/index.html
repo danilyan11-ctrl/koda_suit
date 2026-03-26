@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SELFMADE YB // Y.C.L KITCHEN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --red: #e60000;
+            --white: #f4f4f4;
+            --grey: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg); color: var(--white);
+            font-family: 'Space Grotesk', sans-serif;
+            height: 100vh; width: 100vw; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Системный шум */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/%3E%3C/svg%3E');
+            pointer-events: none; z-index: 999;
+        }
+
+        /* --- ЭКРАН 1: HOLD TO DECRYPT --- */
+        #boot-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 50; transition: opacity 0.5s ease;
+        }
+
+        .hold-btn {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 2px dashed var(--grey);
+            display: flex; justify-content: center; align-items: center;
+            position: relative; cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .hold-text {
+            font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;
+            text-align: center; color: var(--grey);
+            transition: color 0.2s ease;
+        }
+
+        .progress-ring { position: absolute; top: -2px; left: -2px; pointer-events: none; transform: rotate(-90deg); }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.1s linear;
+            stroke: var(--red); stroke-width: 4; fill: transparent;
+            stroke-dasharray: 483; stroke-dashoffset: 483; 
+        }
+
+        #boot-screen.active .hold-btn { transform: scale(0.95); border-color: transparent; }
+        #boot-screen.active .hold-text { color: var(--red); }
+        
+        .instruction { position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 4px; text-transform: uppercase; }
+
+        /* --- ЭКРАН 2: EXPERIENCE --- */
+        #experience-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; z-index: 40;
+        }
+
+        #audio-aura {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(230,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(20px); transition: transform 0.05s ease;
+        }
+
+        #dynamic-logo {
+            width: 80px; position: relative; z-index: 2;
+            filter: brightness(0) invert(1);
+            transition: transform 0.05s ease;
+        }
+
+        .track-info { position: absolute; bottom: 10%; text-align: center; z-index: 2; }
+        .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #aaa; }
+        .album { font-size: 3rem; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; }
+        .timer { font-family: monospace; font-size: 0.9rem; color: var(--red); margin-top: 15px; letter-spacing: 2px; }
+
+        /* --- ЭКРАН 3: ДАТА --- */
+        #date-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; z-index: 90;
+        }
+
+        #date-screen.visible { opacity: 1; animation: flashIn 0.1s ease-out forwards; }
+        
+        .massive-date { 
+            font-size: 3.5rem; font-weight: 900; color: var(--red); 
+            letter-spacing: 4px; text-shadow: 0 0 20px rgba(230,0,0,0.4);
+            animation: textFlicker 3s infinite;
+        }
+        .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
+
+        /* --- ЭКРАН 4: THE CRASH (Кнопки) --- */
+        #crash-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; z-index: 100;
+            padding: 20px; text-align: center;
+        }
+
+        #crash-screen.visible { opacity: 1; pointer-events: all; animation: crtFlicker 0.15s 3; }
+
+        .access-denied { font-size: 3.5rem; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 10px; text-transform: uppercase; }
+        .crash-sub { font-size: 0.9rem; color: #888; letter-spacing: 2px; margin-bottom: 40px; max-width: 320px; }
+
+        /* Группа кнопок */
+        .btn-group {
+            display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px;
+        }
+
+        .brutal-btn {
+            width: 100%;
+            background: var(--red); color: var(--white);
+            border: 2px solid var(--red); padding: 18px 20px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            box-shadow: 6px 6px 0px rgba(255,255,255,0.1);
+            transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
+        }
+        .brutal-btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px rgba(255,255,255,0.1); }
+        
+        /* Вторичная кнопка (Напоминание) */
+        .brutal-btn.outline {
+            background: transparent; color: var(--white); border-color: var(--grey);
+            box-shadow: 6px 6px 0px rgba(255,255,255,0.05);
+        }
+        .brutal-btn.outline:active { box-shadow: 2px 2px 0px rgba(255,255,255,0.05); }
+
+        .glitch-effect { filter: url(#displacementFilter); }
+
+        @keyframes crtFlicker { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.9; } }
+        @keyframes flashIn { 0% { background: var(--white); filter: invert(1); } 100% { background: var(--bg); filter: invert(0); } }
+        @keyframes textFlicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 24%, 55% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <svg style="display: none;">
+        <defs>
+            <filter id="displacementFilter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="boot-screen">
+        <div class="hold-btn" id="hold-trigger">
+            <svg class="progress-ring" width="160" height="160">
+                <circle class="progress-ring__circle" cx="80" cy="80" r="77" />
+            </svg>
+            <span class="hold-text">HOLD TO<br>DECRYPT</span>
+        </div>
+        <div class="instruction">SYSTEM LOCKED</div>
+    </div>
+
+    <div id="experience-screen">
+        <div id="audio-aura"></div>
+        <img src="./logo.png" alt="KODA" id="dynamic-logo">
+        <div class="track-info">
+            <div class="artist">SELFMADE YB</div>
+            <div class="album">Y.C.L<br>KITCHEN</div>
+            <div class="timer" id="time-display">00.00 / 15.00</div>
+        </div>
+    </div>
+
+    <div id="date-screen">
+        <div class="massive-date">24.04.2026</div>
+        <div class="date-sub">ALBUM RELEASE</div>
+    </div>
+
+    <div id="crash-screen">
+        <div class="access-denied">ACCESS<br>DENIED</div>
+        <div class="crash-sub">ПРЕДПРОСЛУШИВАНИЕ ПРЕРВАНО.</div>
+        
+        <div class="btn-group">
+            <button class="brutal-btn" onclick="window.location.href='#merch'">ЗАКАЗАТЬ МЕРЧ</button>
+            <button class="brutal-btn outline" onclick="downloadCalendarEvent()">НАПОМНИТЬ ОБ АЛЬБОМЕ</button>
+        </div>
+    </div>
+
+    <audio id="audio-track" src="./frik%20master.mp3" preload="auto"></audio>
+
+    <script>
+        const bootScreen = document.getElementById('boot-screen');
+        const holdTrigger = document.getElementById('hold-trigger');
+        const circle = document.querySelector('.progress-ring__circle');
+        const experienceScreen = document.getElementById('experience-screen');
+        const dateScreen = document.getElementById('date-screen');
+        const crashScreen = document.getElementById('crash-screen');
+        const audio = document.getElementById('audio-track');
+        const timeDisplay = document.getElementById('time-display');
+        const dynamicLogo = document.getElementById('dynamic-logo');
+        const audioAura = document.getElementById('audio-aura');
+
+        // Логика удержания
+        let holdTimer;
+        let progress = 0;
+        const maxProgress = 483; 
+        const holdDuration = 1500; 
+        const intervalTime = 20;
+        const step = maxProgress / (holdDuration / intervalTime);
+
+        function startHold(e) {
+            e.preventDefault();
+            bootScreen.classList.add('active');
+            holdTimer = setInterval(() => {
+                progress += step;
+                const offset = maxProgress - progress;
+                circle.style.strokeDashoffset = offset < 0 ? 0 : offset;
+                if (progress >= maxProgress) {
+                    clearInterval(holdTimer);
+                    unlockExperience();
+                }
+            }, intervalTime);
+        }
+
+        function stopHold(e) {
+            e.preventDefault();
+            clearInterval(holdTimer);
+            bootScreen.classList.remove('active');
+            progress = 0;
+            circle.style.strokeDashoffset = maxProgress;
+        }
+
+        holdTrigger.addEventListener('mousedown', startHold);
+        holdTrigger.addEventListener('touchstart', startHold, {passive: false});
+        window.addEventListener('mouseup', stopHold);
+        window.addEventListener('touchend', stopHold);
+
+        let audioCtx, analyser, dataArray;
+
+        function initAudio() {
+            if (audioCtx) return; 
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        function animateAudioVisuals() {
+            if (!audio.paused) requestAnimationFrame(animateAudioVisuals);
+            analyser.getByteFrequencyData(dataArray);
+            const bass = dataArray.slice(0, 10).reduce((a, b) => a + b) / 10;
+            const scale = 1 + (bass / 500); 
+            const auraScale = 1 + (bass / 200);
+            dynamicLogo.style.transform = `scale(${scale})`;
+            audioAura.style.transform = `translate(-50%, -50%) scale(${auraScale})`;
+            audioAura.style.opacity = bass / 255;
+        }
+
+        function unlockExperience() {
+            holdTrigger.removeEventListener('mousedown', startHold);
+            holdTrigger.removeEventListener('touchstart', startHold);
+            initAudio(); 
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            bootScreen.style.opacity = '0';
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+                experienceScreen.style.opacity = '1';
+                audio.play();
+                animateAudioVisuals();
+            }, 500);
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            let current = audio.currentTime;
+            let sec = Math.floor(current);
+            let ms = Math.floor((current % 1) * 100);
+            timeDisplay.innerText = `00:${sec < 10 ? '0'+sec : sec}.${ms < 10 ? '0'+ms : ms} / 00:15.00`;
+
+            if (current >= 15) {
+                audio.pause();
+                audio.currentTime = 15;
+                triggerSequence();
+            }
+        });
+
+        function triggerSequence() {
+            experienceScreen.classList.add('glitch-effect');
+            setTimeout(() => {
+                experienceScreen.style.display = 'none';
+                dateScreen.classList.add('visible');
+                setTimeout(() => {
+                    dateScreen.style.display = 'none';
+                    crashScreen.classList.add('visible');
+                }, 2500);
+            }, 200);
+        }
+
+        // ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СОБЫТИЯ КАЛЕНДАРЯ
+        function downloadCalendarEvent() {
+            // Формируем структуру файла .ics
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Koda Music//Y.C.L KITCHEN//RU
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260424
+DTEND;VALUE=DATE:20260425
+SUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN
+DESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!
+BEGIN:VALARM
+TRIGGER:-PT9H
+ACTION:DISPLAY
+DESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+            // Создаем виртуальный файл в браузере
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            
+            // Создаем скрытую ссылку и "нажимаем" на нее
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'ycl_kitchen_release.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Визуальный фидбек на кнопке
+            const btn = document.querySelector('.brutal-btn.outline');
+            const originalText = btn.innerText;
+            btn.innerText = "ДОБАВЛЕНО В КАЛЕНДАРЬ!";
+            btn.style.color = "var(--red)";
+            btn.style.borderColor = "var(--red)";
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.color = "var(--white)";
+                btn.style.borderColor = "var(--grey)";
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
