@@ -194,7 +194,7 @@
         </div>
     </div>
 
-   <audio id="audio-track" src="/kitchen/freakmaster.mp3" preload="auto"></audio>
+   <audio id="audio-track" src="/kitchen/freakmaster.mp3" preload="auto" playsinline></audio>
 
     <script>
         const bootScreen = document.getElementById('boot-screen');
@@ -269,18 +269,40 @@
         }
 
         function unlockExperience() {
-            holdTrigger.removeEventListener('mousedown', startHold);
-            holdTrigger.removeEventListener('touchstart', startHold);
-            initAudio(); 
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            bootScreen.style.opacity = '0';
-            setTimeout(() => {
-                bootScreen.style.display = 'none';
-                experienceScreen.style.opacity = '1';
-                audio.play();
+    holdTrigger.removeEventListener('mousedown', startHold);
+    holdTrigger.removeEventListener('touchstart', startHold);
+
+    bootScreen.style.opacity = '0';
+
+    setTimeout(() => {
+        bootScreen.style.display = 'none';
+        experienceScreen.style.opacity = '1';
+
+        audio.currentTime = 0;
+
+        // 🔥 КРИТИЧНО — сначала play
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                // только после успешного старта подключаем WebAudio
+                initAudio();
                 animateAudioVisuals();
-            }, 500);
+            }).catch((err) => {
+                console.log("PLAY ERROR:", err);
+
+                // fallback для ебучих мобилок
+                audio.muted = true;
+                audio.play().then(() => {
+                    audio.muted = false;
+                    initAudio();
+                    animateAudioVisuals();
+                });
+            });
         }
+
+    }, 500);
+}
 
         audio.addEventListener('timeupdate', () => {
             let current = audio.currentTime;
