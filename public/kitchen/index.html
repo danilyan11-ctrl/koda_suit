@@ -269,27 +269,49 @@
         }
 
         function unlockExperience() {
-    holdTrigger.removeEventListener('mousedown', startHold);
-    holdTrigger.removeEventListener('touchstart', startHold);
+  holdTrigger.removeEventListener('mousedown', startHold);
+  holdTrigger.removeEventListener('touchstart', startHold);
 
+  initAudio();
+
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  // 👉 СРАЗУ PLAY (без setTimeout)
+  audio.currentTime = 0;
+
+  const playPromise = audio.play();
+
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      audio.muted = true;
+      audio.play().then(() => {
+        audio.muted = false;
+      });
+    });
+  }
+
+  // 👉 а вот UI можно с задержкой
+  setTimeout(() => {
     bootScreen.style.opacity = '0';
-
-    setTimeout(() => {
-        bootScreen.style.display = 'none';
-        experienceScreen.style.opacity = '1';
-
-        audio.currentTime = 0;
+    bootScreen.style.display = 'none';
+    experienceScreen.style.opacity = '1';
+    animateAudioVisuals();
+  }, 300);
+}
 
         // 🔥 КРИТИЧНО — сначала play
-        const playPromise = audio.play();
+const playPromise = audio.play();
 
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                // только после успешного старта подключаем WebAudio
-                initAudio();
-                animateAudioVisuals();
-            }).catch((err) => {
-                console.log("PLAY ERROR:", err);
+if (playPromise !== undefined) {
+    playPromise.catch(() => {
+        audio.muted = true;
+        audio.play().then(() => {
+            audio.muted = false;
+        });
+    });
+}
 
                 // fallback для ебучих мобилок
                 audio.muted = true;
