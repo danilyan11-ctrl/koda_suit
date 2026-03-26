@@ -74,16 +74,20 @@
         }
 
         #dynamic-logo {
-            width: 110px; position: relative; z-index: 2;
-            filter: brightness(0) invert(1);
+            width: 110px; /* Логотип 110px */
+            position: relative; z-index: 2;
+            filter: brightness(0) invert(1); /* Логотип белый */
         }
 
-        @keyframes smoothBreathe {
-            0% { transform: scale(1); opacity: 0.8; filter: brightness(0) invert(1) drop-shadow(0 0 0px rgba(255,255,255,0)); }
-            100% { transform: scale(1.05); opacity: 1; filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255,255,255,0.15)); }
+        /* Дорогая, плавная пульсация (Дыхание) */
+        @keyframes smoothPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.08); opacity: 1; }
         }
         
-        .is-playing #dynamic-logo { animation: smoothBreathe 1.5s infinite alternate ease-in-out; }
+        .is-playing #dynamic-logo {
+            animation: smoothPulse 1.8s infinite alternate ease-in-out;
+        }
 
         .track-info { position: absolute; bottom: 10%; width: 80%; max-width: 300px; text-align: center; z-index: 2; }
         .artist { font-size: 1rem; font-weight: 300; letter-spacing: 8px; margin-bottom: 5px; color: #888; }
@@ -99,6 +103,7 @@
             transition: width 0.1s linear;
         }
         
+        /* Таймер КРАСНЫЙ */
         .timer { font-family: monospace; font-size: 0.85rem; color: var(--red); margin-top: 10px; letter-spacing: 2px; }
 
         #date-screen {
@@ -115,6 +120,7 @@
         }
         .date-sub { font-size: 0.8rem; letter-spacing: 8px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
+        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ФИНАЛЬНЫЙ ЭКРАН --- */
         #crash-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -202,11 +208,11 @@
     <div id="crash-screen">
         <img src="./logo.png" alt="KODA" class="final-logo">
         <div class="access-denied">Y.C.L KITCHEN</div>
-        <div class="crash-sub">СНИППЕТ ЗАВЕРШЕН</div>
+        <div class="crash-sub">МЫ ТУТ КОЕ-ЧТО СВАРИЛИ</div>
         
-                <div class="btn-group">
-            <a href="https://t.me/thekodamusic?text=%D0%A1%D0%B0%D0%BB%D1%8E%D1%82%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BC%D0%B5%D1%80%D1%87%20KITCHEN" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
-            <a id="calendar-link" class="premium-btn" download="ycl_kitchen.ics">НАПОМНИТЬ В КАЛЕНДАРЬ</a>
+        <div class="btn-group">
+            <a href="https://t.me/thekodamusic?text=%D0%A1%D0%B0%D0%BB%D1%8E%D1%82,%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BC%D0%B5%D1%80%D1%87%20KITCHEN" class="premium-btn accent">ЗАКАЗАТЬ МЕРЧ</a>
+            <a id="calendar-link" class="premium-btn" onclick="openGoogleCalendarReminder()">НАПОМНИТЬ В КАЛЕНДАРЬ</a>
         </div>
     </div>
 
@@ -314,19 +320,24 @@
             }, 200);
         }
 
-        // Подготовка ссылки для скачивания календаря (фикс для Safari)
-        const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Koda Music//Y.C.L KITCHEN//RU\nBEGIN:VEVENT\nDTSTART:20260424T000000Z\nDTEND:20260425T000000Z\nSUMMARY:Релиз альбома SELFMADE YB - Y.C.L KITCHEN\nDESCRIPTION:Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!\nBEGIN:VALARM\nTRIGGER:-PT9H\nACTION:DISPLAY\nDESCRIPTION:Релиз альбома Y.C.L KITCHEN сегодня!\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
-        
-        const calendarLink = document.getElementById('calendar-link');
-        calendarLink.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
-
-        calendarLink.addEventListener('click', function() {
-            const originalText = this.innerText;
-            this.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
+        // Фикс Календаря для iOS: Генерируем прямую ссылку на Google Календарь
+        function openGoogleCalendarReminder() {
+            const eventInfo = {
+                title: "Релиз альбома SELFMADE YB - Y.C.L KITCHEN",
+                dates: "20260424T090000Z/20260424T120000Z", // 24 Апреля 2026
+                details: "Альбом Y.C.L KITCHEN уже доступен на всех площадках. Слушай прямо сейчас!",
+                location: "thekodamusic.com"
+            };
+            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventInfo.title)}&dates=${eventInfo.dates}&details=${encodeURIComponent(eventInfo.details)}&location=${encodeURIComponent(eventInfo.location)}`;
+            window.location.href = googleCalendarUrl;
+            
+            const btn = document.getElementById('calendar-link');
+            const originalText = btn.innerText;
+            btn.innerText = "ОТКРЫВАЕМ КАЛЕНДАРЬ...";
             setTimeout(() => {
-                this.innerText = originalText;
+                btn.innerText = originalText;
             }, 3000);
-        });
+        }
     </script>
 </body>
 </html>
