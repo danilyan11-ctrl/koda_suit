@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
+import { SITE } from "../content/site";
 
 import studioA from "../assets/studioA.png";
 import studioB from "../assets/studioB.png";
@@ -27,7 +28,9 @@ export default function Studio() {
       `Комната: ${roomText}`,
       dateTime ? `Дата/время: ${dateTime}` : "Дата/время: (уточню)",
       `Длительность: ${hours} ч`,
+      `Предоплата: ${SITE.booking.depositPercent}%`,
       "",
+      `Адрес: ${SITE.studio.address} (м. ${SITE.studio.metro})`,
       "Хочу забронировать. Подскажите свободные слоты и как добраться?",
     ].join("\n");
 

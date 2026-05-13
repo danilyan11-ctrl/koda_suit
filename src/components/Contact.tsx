@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
 import { useState } from "react";
+import { SITE, phoneLink } from "../content/site";
 
 export default function Contact() {
   // Создаем хранилища для текста из полей
@@ -11,7 +11,13 @@ export default function Contact() {
     e.preventDefault(); // Останавливаем стандартную перезагрузку страницы при отправке формы
 
     // Формируем красивое сообщение для Телеграма
-    const message = `🔥 Новая заявка (JOIN THE CULT)\n\nИмя: ${name || "Не указано"}\nКонтакт: ${contact || "Не указан"}\nО проекте: ${project || "Нет описания"}`;
+    const message =
+      `🔥 Новая заявка (JOIN THE CULT)\n\n` +
+      `Имя: ${name || "Не указано"}\n` +
+      `Контакт: ${contact || "Не указан"}\n` +
+      `О проекте: ${project || "Нет описания"}\n\n` +
+      `Условия брони: ${SITE.booking.depositPercent}% предоплата, отмена за ${SITE.booking.cancelDeadlineHours}ч.\n` +
+      `Адрес: ${SITE.studio.address} (м. ${SITE.studio.metro})`;
     
     // Кодируем русский текст и переносы строк в формат для браузера (чтобы Safari не ругался)
     const encodedMessage = encodeURIComponent(message);
@@ -39,12 +45,43 @@ export default function Contact() {
             >
               Забронировать студию
             </a>
+            {SITE.booking.phone ? (
+              <a
+                href={phoneLink(SITE.booking.phone)}
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-koda-white/15 bg-koda-black/40 px-5 py-3 text-xs font-bold uppercase tracking-widest text-koda-white/90 transition hover:bg-koda-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+              >
+                Позвонить
+              </a>
+            ) : null}
+            <a
+              href={SITE.maps.yandex}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-koda-white/10 bg-transparent px-5 py-3 text-xs font-bold uppercase tracking-widest text-koda-white/60 transition hover:text-koda-white hover:bg-koda-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+            >
+              Яндекс.Карты
+            </a>
             <a
               href="#studio"
               className="inline-flex min-h-11 items-center justify-center rounded-full border border-koda-white/10 bg-transparent px-5 py-3 text-xs font-bold uppercase tracking-widest text-koda-white/60 transition hover:text-koda-white hover:bg-koda-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
             >
               Смотреть комнаты
             </a>
+          </div>
+
+          <div className="flex flex-col gap-2 rounded-2xl border border-koda-white/10 bg-koda-graphite/30 p-5 text-sm text-koda-white/70 md:max-w-2xl md:p-6 md:text-base">
+            <div>
+              <span className="text-koda-white/90 font-semibold">Адрес:</span>{" "}
+              {SITE.studio.address} (м. {SITE.studio.metro})
+            </div>
+            <div>
+              <span className="text-koda-white/90 font-semibold">Режим:</span> {SITE.studio.hours}
+            </div>
+            <div>
+              <span className="text-koda-white/90 font-semibold">Условия:</span>{" "}
+              {SITE.booking.depositPercent}% предоплата, отмена максимум за{" "}
+              {SITE.booking.cancelDeadlineHours} часов до записи
+            </div>
           </div>
 
           {/* Вешаем функцию на отправку формы */}
