@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SITE, phoneLink } from "../content/site";
+import { METRIKA, reachGoal } from "../analytics/metrika";
 
 export default function Contact() {
   // Создаем хранилища для текста из полей
@@ -9,6 +10,8 @@ export default function Contact() {
 
   const handleTelegramRedirect = (e: React.FormEvent) => {
     e.preventDefault(); // Останавливаем стандартную перезагрузку страницы при отправке формы
+
+    reachGoal(METRIKA.goals.leadSubmit);
 
     // Формируем красивое сообщение для Телеграма
     const message =
