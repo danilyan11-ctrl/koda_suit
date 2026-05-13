@@ -7,7 +7,7 @@ export default function Contact() {
   const [contact, setContact] = useState("");
   const [project, setProject] = useState("");
 
-  const handleTelegramRedirect = (e) => {
+  const handleTelegramRedirect = (e: React.FormEvent) => {
     e.preventDefault(); // Останавливаем стандартную перезагрузку страницы при отправке формы
 
     // Формируем красивое сообщение для Телеграма
@@ -29,6 +29,23 @@ export default function Contact() {
           <h2 className="text-3xl font-bold uppercase sm:text-4xl md:text-6xl tracking-tight">
             JOIN THE <span className="text-koda-accent">CULT</span>
           </h2>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="https://t.me/thekodamusic"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-koda-white/15 bg-koda-black/40 px-5 py-3 text-xs font-bold uppercase tracking-widest text-koda-white/90 transition hover:bg-koda-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+            >
+              Забронировать студию
+            </a>
+            <a
+              href="#studio"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-koda-white/10 bg-transparent px-5 py-3 text-xs font-bold uppercase tracking-widest text-koda-white/60 transition hover:text-koda-white hover:bg-koda-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+            >
+              Смотреть комнаты
+            </a>
+          </div>
 
           {/* Вешаем функцию на отправку формы */}
           <form onSubmit={handleTelegramRedirect} className="flex max-w-2xl flex-col gap-6">

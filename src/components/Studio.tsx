@@ -1,16 +1,39 @@
 import { motion } from "motion/react";
+import { useMemo, useState } from "react";
 
-import studio1 from "../assets/studio1.jpg";
-import studio2 from "../assets/studio2.jpg";
-import studio3 from "../assets/studio3.jpg";
+import studioA from "../assets/studioA.png";
+import studioB from "../assets/studioB.png";
+import lounge from "../assets/lounge.png";
 
 const images = [
-  studio1,
-  studio2,
-  studio3
+  studioA,
+  studioB,
+  lounge
 ];
 
 export default function Studio() {
+  const [room, setRoom] = useState<"A" | "B" | "Любая">("Любая");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [hours, setHours] = useState<1 | 2 | 3 | 4>(2);
+
+  const quickBookUrl = useMemo(() => {
+    const roomText = room === "Любая" ? "любую комнату" : `Mix Room ${room}`;
+    const dateTime = [date, time].filter(Boolean).join(" ");
+
+    const message = [
+      "🔥 Бронь студии KODA",
+      "",
+      `Комната: ${roomText}`,
+      dateTime ? `Дата/время: ${dateTime}` : "Дата/время: (уточню)",
+      `Длительность: ${hours} ч`,
+      "",
+      "Хочу забронировать. Подскажите свободные слоты и как добраться?",
+    ].join("\n");
+
+    return `https://t.me/thekodamusic?text=${encodeURIComponent(message)}`;
+  }, [date, hours, room, time]);
+
   return (
     <section id="studio" className="scroll-mt-28 border-b border-koda-white/10 bg-koda-graphite py-24 md:py-32">
       <div className="container mx-auto px-4 md:px-12">
@@ -41,6 +64,81 @@ export default function Studio() {
             Профессиональный подход, атмосфера полного погружения, передовые технические решения.
           </motion.p>
         </div>
+
+        {/* Quick booking */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mb-8 rounded-2xl border border-koda-white/10 bg-koda-black/40 p-4 backdrop-blur-sm md:mb-10 md:p-6"
+        >
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              <div className="text-sm font-semibold uppercase tracking-wider text-koda-white/70">
+                Быстрое бронирование
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:items-center">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-wider text-koda-white/40">Комната</span>
+                  <select
+                    value={room}
+                    onChange={(e) => setRoom(e.target.value as "A" | "B" | "Любая")}
+                    className="h-11 rounded-xl border border-koda-white/10 bg-koda-black/60 px-3 text-sm text-koda-white outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+                  >
+                    <option value="Любая">Любая</option>
+                    <option value="A">Mix A</option>
+                    <option value="B">Mix B</option>
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-wider text-koda-white/40">Дата</span>
+                  <input
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    type="date"
+                    className="h-11 rounded-xl border border-koda-white/10 bg-koda-black/60 px-3 text-sm text-koda-white outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-wider text-koda-white/40">Время</span>
+                  <input
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    type="time"
+                    className="h-11 rounded-xl border border-koda-white/10 bg-koda-black/60 px-3 text-sm text-koda-white outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-wider text-koda-white/40">Часы</span>
+                  <select
+                    value={hours}
+                    onChange={(e) => setHours(Number(e.target.value) as 1 | 2 | 3 | 4)}
+                    className="h-11 rounded-xl border border-koda-white/10 bg-koda-black/60 px-3 text-sm text-koda-white outline-none focus-visible:ring-2 focus-visible:ring-koda-white/20"
+                  >
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <a
+              href={quickBookUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-6 py-4 text-center text-sm font-bold uppercase tracking-wider text-black transition hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:scale-[0.99]"
+            >
+              Открыть Telegram
+            </a>
+          </div>
+        </motion.div>
 
         {/* GRID */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
@@ -96,8 +194,18 @@ export default function Studio() {
                   </p> 
 
                   <a
-                    href="https://t.me/thekodamusic"
+                    href={`https://t.me/thekodamusic?text=${encodeURIComponent(
+                      [
+                        "🔥 Бронь студии KODA",
+                        "",
+                        "Комната: Mix Room A",
+                        "Длительность: (уточню)",
+                        "",
+                        "Хочу забронировать. Подскажите свободные слоты?",
+                      ].join("\n")
+                    )}`}
                     target="_blank"
+                    rel="noreferrer"
                     className="
                     inline-flex mt-4 min-h-11 items-center justify-center rounded-full 
                     bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white 
@@ -168,8 +276,18 @@ export default function Studio() {
                     </p>
 
                     <a
-                      href="https://t.me/thekodamusic"
+                      href={`https://t.me/thekodamusic?text=${encodeURIComponent(
+                        [
+                          "🔥 Бронь студии KODA",
+                          "",
+                          "Комната: Mix Room B",
+                          "Длительность: (уточню)",
+                          "",
+                          "Хочу забронировать. Подскажите свободные слоты?",
+                        ].join("\n")
+                      )}`}
                       target="_blank"
+                      rel="noreferrer"
                       className="
                       inline-flex mt-4 min-h-11 items-center justify-center rounded-full 
                       bg-red-600 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white 

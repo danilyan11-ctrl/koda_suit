@@ -1,4 +1,4 @@
-import about from "../assets/about.jpg";
+import about from "../assets/about_new.png";
 import { motion } from "motion/react";
 
 export default function About() {
