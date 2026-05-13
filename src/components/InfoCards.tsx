@@ -1,36 +1,31 @@
 import { motion } from "motion/react";
-import equipmentCard from "../assets/card-equipment.png";
-import zonesCard from "../assets/card-zones.png";
-import pricesCard from "../assets/card-prices.png";
-import promoCard from "../assets/card-promo.png";
-
-type Card = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  img: string;
-};
-
-const cards: Card[] = [
-  { id: "equipment", title: "Оборудование", subtitle: "Что внутри", img: equipmentCard },
-  { id: "zones", title: "Комнаты", subtitle: "Main / Chill / Cook Up", img: zonesCard },
-  { id: "prices", title: "Пакеты и цены", subtitle: "Cook Up / Track Cooking", img: pricesCard },
-  { id: "promo", title: "Акция", subtitle: "Второй час", img: promoCard },
-];
+import { useState } from "react";
+import { INFO_CARDS } from "../content/infoCards";
+import StoriesOverlay from "./StoriesOverlay";
 
 export default function InfoCards() {
+  const [storiesOpen, setStoriesOpen] = useState(false);
+  const [storiesStart, setStoriesStart] = useState(0);
+
+  const openStories = (index: number) => {
+    setStoriesStart(index);
+    setStoriesOpen(true);
+  };
+
   return (
-    <section id="info" className="scroll-mt-28 border-b border-koda-white/10 bg-koda-black py-24 md:py-32">
+    <section id="info" className="scroll-mt-28 border-b border-koda-white/10 bg-koda-black py-16 md:py-32">
       <div className="container mx-auto px-4 md:px-12">
-        <div className="mb-10 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
+        <div className="mb-8 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="mb-3 font-display text-[3.5rem] leading-none text-koda-white/10 md:text-[6rem]">04</div>
-            <h2 className="font-sans text-4xl font-bold uppercase tracking-tighter md:text-6xl">
+            <div className="mb-2 font-display text-[3rem] leading-none text-koda-white/10 md:mb-3 md:text-[6rem]">
+              04
+            </div>
+            <h2 className="font-sans text-3xl font-bold uppercase tracking-tighter md:text-6xl">
               Всё по делу
             </h2>
           </motion.div>
@@ -40,54 +35,59 @@ export default function InfoCards() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-sm text-base font-light leading-relaxed text-koda-white/60 md:text-right md:text-lg md:leading-relaxed"
+            className="max-w-md text-sm font-light leading-relaxed text-koda-white/60 md:text-right md:text-lg md:leading-relaxed"
           >
-            Оборудование, комнаты, пакеты и акции — в одном месте.
+            Оборудование, комнаты, прайс и акции — откройте как сторис: удобно с телефона, без горизонтального свайпа по ленте.
           </motion.p>
         </div>
 
-        <div className="relative">
-          <div className="flex gap-4 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
-            {cards.map((card, idx) => (
-              <motion.article
-                key={card.id}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.55, delay: idx * 0.08 }}
-                className="snap-start shrink-0 w-[86%] sm:w-[70%] md:w-[46%] lg:w-[36%]"
-              >
-                <div className="group overflow-hidden rounded-2xl border border-koda-white/10 bg-koda-graphite/30">
-                  <div className="flex items-end justify-between gap-3 p-4 md:p-5">
-                    <div className="min-w-0">
-                      <div className="text-xs uppercase tracking-widest text-koda-white/40">
-                        {card.subtitle ?? "Инфо"}
-                      </div>
-                      <div className="mt-1 truncate text-lg font-bold uppercase tracking-tight">
-                        {card.title}
-                      </div>
-                    </div>
-                    <div className="text-xs font-semibold uppercase tracking-widest text-koda-white/40">
-                      swipe →
-                    </div>
-                  </div>
-
-                  <div className="relative aspect-[9/16] w-full overflow-hidden bg-koda-black">
-                    <img
-                      src={card.img}
-                      alt={card.title}
-                      className="h-full w-full object-cover grayscale opacity-90 transition duration-500 group-hover:grayscale-0 group-hover:opacity-100 group-active:grayscale-0 group-active:opacity-100"
-                      loading="lazy"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-black/30 opacity-100 transition duration-300 group-hover:opacity-0 group-active:opacity-0" />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55 }}
+          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4"
+        >
+          {INFO_CARDS.map((card, idx) => (
+            <button
+              key={card.id}
+              type="button"
+              onClick={() => openStories(idx)}
+              className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-koda-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-koda-black rounded-2xl"
+            >
+              <div className="overflow-hidden rounded-2xl border border-koda-white/10 bg-koda-graphite/30 active:scale-[0.98] transition-transform duration-150">
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-koda-black sm:aspect-[3/4]">
+                  <img
+                    src={card.img}
+                    alt={card.title}
+                    className="h-full w-full object-cover object-top opacity-90 transition duration-300 group-active:opacity-100 md:group-hover:opacity-100"
+                    loading="lazy"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-white/50 sm:text-xs">
+                      {card.subtitle}
+                    </p>
+                    <p className="mt-0.5 text-sm font-bold uppercase leading-tight text-white sm:text-base">
+                      {card.title}
+                    </p>
+                    <p className="mt-2 inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-koda-accent sm:text-xs">
+                      Смотреть
+                    </p>
                   </div>
                 </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
+              </div>
+            </button>
+          ))}
+        </motion.div>
       </div>
+
+      <StoriesOverlay
+        open={storiesOpen}
+        startIndex={storiesStart}
+        cards={INFO_CARDS}
+        onClose={() => setStoriesOpen(false)}
+      />
     </section>
   );
 }
-

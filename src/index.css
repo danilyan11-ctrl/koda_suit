@@ -101,3 +101,25 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-koda-accent);
 }
+
+/* Stories viewer — полоска прогресса (синхрон с STORY_MS в StoriesOverlay) */
+@keyframes koda-story-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.koda-story-progress {
+  transform-origin: left;
+  animation: koda-story-fill 6.5s linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .koda-story-progress {
+    animation: none;
+    transform: scaleX(1);
+  }
+}

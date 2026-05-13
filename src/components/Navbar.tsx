@@ -6,7 +6,10 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed top-4 left-1/2 z-50 w-[calc(100%-1rem)] max-w-5xl -translate-x-1/2">
+    <div
+      className="fixed left-1/2 z-50 w-[calc(100%-1rem)] max-w-5xl -translate-x-1/2"
+      style={{ top: "max(1rem, env(safe-area-inset-top))" }}
+    >
       <div className="flex items-center justify-between gap-3 rounded-full border border-koda-white/10 bg-koda-black/70 px-4 py-3 backdrop-blur-xl md:px-6">
 
         <div className="flex items-center gap-2">

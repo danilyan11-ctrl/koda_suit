@@ -28,7 +28,13 @@ export default function App() {
       <Footer />
 
       {/* Sticky booking CTA */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
+      <div
+        className="fixed z-50 flex flex-col gap-3"
+        style={{
+          bottom: "max(1.25rem, env(safe-area-inset-bottom))",
+          right: "max(1.25rem, env(safe-area-inset-right))",
+        }}
+      >
         <a
           href={telegramDeepLink(["🔥 Бронь студии KODA", "", "Хочу забронировать студию. Подскажите свободные слоты?"].join("\n"))}
           target="_blank"
