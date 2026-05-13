@@ -6,10 +6,11 @@ declare global {
 
 export const METRIKA = {
   counterId: 109181994,
+  /** Идентификаторы целей — должны совпадать с целями в Яндекс.Метрике (тип: JavaScript-событие). */
   goals: {
-    phoneClick: "phone_click",
-    telegramClick: "telegram_click",
-    leadSubmit: "lead_submit",
+    phoneClick: "клик по телефону",
+    telegramClick: "переход в Telegram",
+    leadSubmit: 'отправка формы "Оставить заявку"',
   },
 } as const;
 
